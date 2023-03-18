@@ -163,29 +163,41 @@ int main()
     // vector<int> effective_rb(no_of_embb_users);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unordered_set<int> prev_idx,curr_idx;
+    unordered_set<int> prev_idx, curr_idx;
     vector<vector<double>> effective_rb(8, vector<double>(no_of_embb_users, 0));
 
     double loss_sum = 0;
-    cout << endl
-         << endl;
-    for (int i = 0; i < channel_rb_embb.size(); i++)
-    {
-        cout << i << " ";
-    }
-    cout << endl
-         << "---------------------" << endl;
-///////////////////////
-//////////////////////
-/////////////////////
-////////////////////////////////
-////////////////////////////
-/////////////////////////////
+
+    ///////////////////////
+    //////////////////////
+    /////////////////////
+    ////////////////////////////////
+    ////////////////////////////
+    /////////////////////////////
+    int extra_rb = 0;
+
+
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
-        int no_of_urllc_users = (rand() % 6); // 5
+        loss_sum=0;
+        cout << "----------------------------------------------------\n";
+        cout << "TIME FRAME : " << timeframe << endl;
+        cout << "----------------------\n";
+
+        int no_of_urllc_users = 1 + (rand() % 5); // 5
+        cout<<"URLLC Users are : "<<no_of_urllc_users<<endl;
+
+        cout << endl;
+        for (int i = 0; i < channel_rb_embb.size(); i++)
+        {
+            cout << i + 1 << " ";
+        }
+        cout << endl
+             << "---------------------" << endl;
+
+        
         User urllc_user[no_of_urllc_users];
-        for (int count = 0; count < 5;
+        for (int count = 0; count < no_of_urllc_users;
              count++) // storing random no_of_urllc_users values
         {
             i = (rand() % 28);
@@ -240,12 +252,14 @@ int main()
         {
             channel_rb_urllc_copy = channel_rb_urllc;
             channel_rb_embb_copy = channel_rb_embb;
+
             for (int count_urllc = no_of_urllc_users - 1, count_embb = no_of_embb_users - 1; count_urllc >= 0 && count_embb >= 0;)
             {
                 auto &h_urllc = channel_rb_urllc_copy[count_urllc].first;
                 auto &h_embb = channel_rb_embb_copy[count_embb].first;
                 auto &rb_urllc = channel_rb_urllc_copy[count_urllc].second;
                 auto &rb_embb = channel_rb_embb_copy[count_embb].second;
+                //rb_embb+=extra_rb;
 
                 if (h_urllc < h_embb)
                 {
@@ -294,14 +308,16 @@ int main()
                             continue;
                         }
                     }
-                    else{
+
+                    else
+                    {
                         count_embb--;
                     }
                 }
             }
             for (int i = 0; i < no_of_embb_users; i++)
             {
-                effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
+                effective_rb[minislots][i] += channel_rb_embb_copy[i].second + extra_rb;
                 if (effective_rb[minislots][i] == 0)
                 {
                     curr_idx.insert(i);
@@ -312,16 +328,18 @@ int main()
 
             for (int i = 0; i < channel_rb_embb.size(); i++)
             {
-                cout << (double)channel_rb_embb[i].second - (double)channel_rb_embb_copy[i].second << " ";
+                cout << (double)channel_rb_embb[i].second - (double)channel_rb_embb_copy[i].second + extra_rb << " ";
                 loss_sum += channel_rb_embb[i].second - channel_rb_embb_copy[i].second;
             }
-            cout << endl
-                 << endl;
+            cout << endl;
         }
+
+        cout <<endl<< "Loss sum is " << loss_sum / 8 << endl;
+        extra_rb = loss_sum/80;
     }
 
-    cout << "Loss sum is " << loss_sum/80 << endl;
-    cout << "Final Loss sum is " << loss_sum/80 << endl;
+    
+    cout << "Final Loss sum is " << loss_sum / 8 << endl;
 
     // cout<<"Total loss "<<(total_rb_count * 8) - loss_sum<<endl;
 
