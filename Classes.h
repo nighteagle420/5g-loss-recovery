@@ -40,4 +40,9 @@ public:
     {
         return SNR / power;
     }
+    
+    static double getDataRate(double spec_eff, int bandwidth)
+    {
+        return spec_eff * bandwidth;
+    }
 };
