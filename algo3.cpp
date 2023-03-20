@@ -304,6 +304,7 @@ int main()
                             rb_urllc -= rb_embb;
                             // discrimination
                             // store index of this
+                            curr_idx.insert(count_embb);
                             count_embb--;
                             continue;
                         }
