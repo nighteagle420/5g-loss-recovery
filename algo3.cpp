@@ -66,7 +66,7 @@ int main()
          count++) // storing random no_of_embb_users values
     {
         // i = count;
-        i = (rand() % 26); /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        i = (rand() % 26);
         embb_user[count] = {embb_table[i].mod_index, embb_table[i].code_rate,
                             embb_table[i].spec_eff};
     }
@@ -139,27 +139,8 @@ int main()
 
     vector<pair<double,double>> channel_rb_embb_copy = channel_rb_embb;
 
-    // for (auto p : channel_rb_embb)
-    // {
-    //     cout << p.first << " " << p.second << endl;
-    // }
-    // cout << endl;
-    // for (auto p : channel_rb_urllc)
-    // {
-    //     cout << p.first << " " << p.second << endl;
-    // }
-
-    /*
-    map<double, double> embb_rate;
-    map<double, double> embb_rate_copy = embb_rate;
-
-    for (int count = 0; count < no_of_embb_users; count++) {
-      // embb_rate[SNR_embb[count] / power_embb[count]] =
-      //     embb_user[count].spec_eff * bandwidth;
-      embb_rate[Utility::getChannelQuality(SNR_embb[count],power_embb[count])] =
-          embb_user[count].spec_eff * bandwidth;
-    }
-    */
+    
+    
     double percent = 0.8; // take input of sic percentage from user
     // vector<int> effective_rb(no_of_embb_users);
 
@@ -180,6 +161,8 @@ int main()
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
         loss_sum = 0;
+        prev_idx.clear();
+        curr_idx.clear();
         
         cout << "----------------------------------------------------\n";
         cout << "TIME FRAME : " << timeframe << endl;
@@ -329,36 +312,7 @@ int main()
                         }
                     }
 
-                    // if (prev_idx.find(backptr) == prev_idx.end())
-                    // {
-
-                    //     // puncturing
-                    //     if (rb_embb > rb_urllc)
-                    //     {
-                    //         // cout<<"else part 1"<<endl;
-
-                    //         rb_urllc = 0;
-                    //         count_urllc--;
-                    //         rb_embb -= rb_urllc; //
-                    //         continue;
-                    //     }
-                    //     else
-                    //     {
-                    //         // cout<<"else part2"<<endl;;
-                    //         rb_embb = 0;
-                    //         rb_urllc -= rb_embb;
-                    //         // discrimination
-                    //         // store index of this
-                    //         curr_idx.insert(count_embb);
-                    //         count_embb--;
-                    //         continue;
-                    //     }
-                    // }
-
-                    // else
-                    // {
-                    //     count_embb--;
-                    // }
+                    
                 }
             }
             for (int i = 0; i < no_of_embb_users; i++)
