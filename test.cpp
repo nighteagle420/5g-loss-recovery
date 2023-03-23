@@ -137,7 +137,7 @@ int main()
     // sort the urllc users according to channel quality(highest first)
     // can store them in map/priority_queue
 
-    auto channel_rb_embb_copy = channel_rb_embb;
+    vector<pair<double,double>> channel_rb_embb_copy = channel_rb_embb;
 
     // for (auto p : channel_rb_embb)
     // {
@@ -180,6 +180,7 @@ int main()
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
         loss_sum = 0;
+        
         cout << "----------------------------------------------------\n";
         cout << "TIME FRAME : " << timeframe << endl;
         cout << "----------------------\n";
@@ -188,10 +189,10 @@ int main()
         cout << "URLLC Users are : " << no_of_urllc_users << endl;
 
         cout << endl;
-        for (int i = 0; i < channel_rb_embb.size(); i++)
-        {
-            cout << i + 1 << " ";
-        }
+        // for (int i = 0; i < channel_rb_embb.size(); i++)
+        // {
+        //     cout << i + 1 << " ";
+        // }
         cout << endl
              << "---------------------" << endl;
 
@@ -243,7 +244,7 @@ int main()
 
         sort(channel_rb_urllc.rbegin(), channel_rb_urllc.rend());
 
-        auto channel_rb_urllc_copy = channel_rb_urllc;
+        vector<pair<double,double>> channel_rb_urllc_copy;
 
         //-----------------------------------------------------------------------------------------------------
 
@@ -251,8 +252,22 @@ int main()
         {
             channel_rb_urllc_copy = channel_rb_urllc;
             channel_rb_embb_copy = channel_rb_embb;
+            
+            
+            for (auto &it : channel_rb_embb_copy)
+            {
+                it.second += extra_rb;
+            }
 
-            for (int count_urllc = 0, count_embb = 0, backptr = no_of_embb_users - 1; count_urllc < no_of_urllc_users && count_embb < no_of_embb_users && backptr>=0;)
+            vector<pair<double,double>> channel_rb_embb_standard = channel_rb_embb_copy;
+
+            for(auto it : channel_rb_embb_copy){
+                cout<<it.second<<" ";
+            }
+            cout<<"\t";
+            
+
+            for (int count_urllc = 0, count_embb = 0, backptr = no_of_embb_users - 1; count_urllc < no_of_urllc_users && count_embb < no_of_embb_users && backptr >= 0;)
             {
                 auto &h_urllc = channel_rb_urllc_copy[count_urllc].first;
                 auto &h_embb = channel_rb_embb_copy[count_embb].first;
@@ -269,7 +284,6 @@ int main()
                         rb_embb -= rb_urllc;
                         rb_urllc = 0;
                         count_urllc++;
-                        
 
                         continue;
                     }
@@ -278,7 +292,7 @@ int main()
                         effective_rb[minislots][count_embb] += rb_embb * (1 - percent);
                         rb_urllc -= rb_embb;
                         rb_embb = 0;
-                        
+
                         count_embb++;
                         continue;
                     }
@@ -296,8 +310,7 @@ int main()
                                 backptr_rb_embb -= rb_urllc;
                                 rb_urllc = 0;
                                 count_urllc++;
-                                 //
-                                
+                                //
                             }
                             else
                             {
@@ -308,7 +321,6 @@ int main()
                                 // store index of this
                                 curr_idx.insert(backptr);
                                 backptr--;
-                                
                             }
                         }
                         else
@@ -360,20 +372,23 @@ int main()
 
             prev_idx = curr_idx;
             curr_idx.clear();
-            
 
             for (int i = 0; i < channel_rb_embb.size(); i++)
             {
-                cout << channel_rb_embb_copy[i].second << " ";
-                loss_sum += channel_rb_embb_copy[i].second;
+                cout << channel_rb_embb_standard[i].second - channel_rb_embb_copy[i].second << " ";
+                loss_sum += channel_rb_embb_standard[i].second - channel_rb_embb_copy[i].second;
             }
             cout << endl;
+
+            
         }
-        
 
         cout << endl
-             << "Loss sum is " << loss_sum / 8 << endl;
-        // extra_rb = loss_sum / 80;
+                 << "Loss sum is " << loss_sum / 80 << endl;
+            extra_rb = loss_sum / 80;
+            cout<<"Extra rb is "<<extra_rb<<endl;
+            cout << endl
+                 << "---------------------" << endl;
     }
 
     cout << "Final Loss sum is " << loss_sum / 8 << endl;
