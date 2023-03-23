@@ -170,7 +170,7 @@ int main()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     unordered_set<int> prev_idx, curr_idx;
-    vector<vector<double>> effective_rb(8, vector<double>(no_of_embb_users, 0));
+   
 
     double loss_sum = 0;
 
@@ -181,7 +181,7 @@ int main()
     ////////////////////////////
     /////////////////////////////
     int extra_rb = 0;
-
+    vector<vector<double>> data_rate_embb_timeframe;
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
         loss_sum = 0;
@@ -248,7 +248,8 @@ int main()
         }
 
         sort(channel_rb_urllc.rbegin(), channel_rb_urllc.rend());
-
+        vector<double> data_rate_embb_copy = data_rate_embb;
+        vector<vector<double>> effective_rb(8, vector<double>(no_of_embb_users, 0));
         vector<pair<double,double>> channel_rb_urllc_copy;
 
         //-----------------------------------------------------------------------------------------------------
@@ -369,12 +370,16 @@ int main()
             }
             for (int i = 0; i < no_of_embb_users; i++)
             {
-                effective_rb[minislots][i] += channel_rb_embb_copy[i].second + extra_rb;
-                // if (effective_rb[minislots][i] == 0)
-                // {
-                //     curr_idx.insert(i);
-                // }
+                effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
+                data_rate_embb_copy = data_rate_embb *(effective_rb[minislot][i]/channel_rb_embb[i].second); 
             }
+
+            vector<vector<double>> rolling_rate(10,vector<double>(no_of_embb_users,0);//value of timeframe = 10
+        for(int i=0;i<no_of_embb_users;i++){
+            for(int minislot=0;minislot<8;minislot++){
+                rolling_rate[timeframe][i] = (1 - (1.0/minislot)) * rolling_rate[i] + (1.0/minislot)*data_rate_embb_copy[minislot][i];
+            }
+        }
 
             prev_idx = curr_idx;
             curr_idx.clear();
@@ -388,6 +393,7 @@ int main()
 
             
         }
+        
 
         cout << endl
                  << "Loss sum is " << loss_sum / 80 << endl;
@@ -395,7 +401,24 @@ int main()
             cout<<"Extra rb is "<<extra_rb<<endl;
             cout << endl
                  << "---------------------" << endl;
+    }//end of timeframe
+
+    for(int i = 0 ; i < no_of_embb_users ; i++)
+    {
+        for(int timeframe = 0 ; timeframe < 10 ; timeframe++)
+            average_rate_embb[i] += rolling_rate[timeframe][i];
+        
+        average_rate_embb[i] /= 10;
     }
+        cout<<"                ****************************                "<<endl;
+        cout<<"                     ^^^^^^^^^^^^^^^^                       "<<endl;
+        cout<<"            LOSS RECOVERY OF EMBB USERS                     "<<endl;
+    for(int i = 0 ; i < no_of_embb_users ; i++)
+    {
+        cout<< data_rate_embb[i]/average_rate_embb[i] * 100 << " " ; 
+    }
+
+
 
     cout << "Final Loss sum is " << loss_sum / 8 << endl;
 
