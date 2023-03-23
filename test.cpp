@@ -84,7 +84,7 @@ int main()
     }
 
     vector<double> channel_quality_embb(no_of_embb_users);
-
+    vector<double> data_rate_embb(no_of_embb_users);
     double power_embb[no_of_embb_users];
 
     // double total_power_budget;
@@ -106,8 +106,12 @@ int main()
 
     for (int count = 0; count < no_of_embb_users; count++) // storing channel quality of embb users
     {
-        channel_quality_embb[count] =
-            Utility::getChannelQuality(SNR_embb[count], power_embb[count]);
+        channel_quality_embb[count] = Utility::getChannelQuality(SNR_embb[count], power_embb[count]);
+    }
+
+    for (int count = 0; count < no_of_embb_users; count++) // storing data rate of embb users
+    {
+        data_rate_embb[count] = Utility::getDataRate(embb_user[count].spec_eff, bandwidth);
     }
 
     vector<pair<double, double>> channel_rb_embb;
@@ -116,6 +120,7 @@ int main()
     {
         channel_rb_embb.push_back({channel_quality_embb[count], rb_req_embb[count]});
     }
+
 
     sort(channel_rb_embb.rbegin(), channel_rb_embb.rend());
 
@@ -359,6 +364,7 @@ int main()
                     // {
                     //     count_embb--;
                     // }
+                    
                 }
             }
             for (int i = 0; i < no_of_embb_users; i++)
