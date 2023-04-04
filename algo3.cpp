@@ -120,19 +120,19 @@ int main()
     sort(channel_rb_embb.rbegin(), channel_rb_embb.rend());
 
     //------------------------------------------------------------------------------------------------------
-    map<double, int> embb_map;
-    //   double channel_quality_embb;
-    map<double, int> urllc_map;
-    //   double channel_quality_urllc;
+    // map<double, int> embb_map;
+    // //   double channel_quality_embb;
+    // map<double, int> urllc_map;
+    // //   double channel_quality_urllc;
 
-    for (int count = 0; count < no_of_embb_users; count++)
-    {
-        double channelQuality =
-            Utility::getChannelQuality(SNR_embb[count], power_embb[count]);
-        embb_map[channelQuality] = rb_req_embb[count];
-    }
+    // for (int count = 0; count < no_of_embb_users; count++)
+    // {
+    //     double channelQuality =
+    //         Utility::getChannelQuality(SNR_embb[count], power_embb[count]);
+    //     embb_map[channelQuality] = rb_req_embb[count];
+    // }
 
-    unordered_map<int, int> curr, prev;
+    //unordered_map<int, int> curr, prev;
 
     // sort the urllc users according to channel quality(highest first)
     // can store them in map/priority_queue
@@ -250,7 +250,7 @@ int main()
             cout<<"\t";
             
 
-            for (int count_urllc = 0, count_embb = 0, backptr = no_of_embb_users - 1; count_urllc < no_of_urllc_users && count_embb < no_of_embb_users && backptr >= 0;)
+            for (int count_urllc = 0, count_embb = 0, backptr = no_of_embb_users - 1; count_urllc < no_of_urllc_users && count_embb < no_of_embb_users && backptr >= count_embb;)
             {
                 auto &h_urllc = channel_rb_urllc_copy[count_urllc].first;
                 auto &h_embb = channel_rb_embb_copy[count_embb].first;
