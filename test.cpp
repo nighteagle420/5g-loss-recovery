@@ -381,8 +381,9 @@ int main()
 
             
         for(int i=0;i<no_of_embb_users;i++){
-            for(int minislot=0;minislot<8;minislot++){
+            for(int minislot=1;minislot<=8;minislot++){
                 rolling_rate[timeframe][i] = ((1 - (1.0/minislot)) * rolling_rate[timeframe][i]) + (1.0/minislot)*data_rate_embb_copy[i];
+
             }
         }
 
