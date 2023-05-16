@@ -157,8 +157,6 @@ int main()
         data_rate_embb[count] = Utility::getDataRate(embb_user[count].spec_eff, bandwidth);
     }
 
-
-
     ///////////////////////
     //////////////////////
     /////////////////////
@@ -238,7 +236,7 @@ int main()
         vector<double> data_rate_embb_copy = data_rate_embb;
         vector<pair<double, double>> channel_rb_urllc_copy;
         int index = 0;
-        
+
         //-----------------------------------------------------------------------------------------------------
 
         for (int minislots = 0; minislots < 8; minislots++)
@@ -246,10 +244,10 @@ int main()
             channel_rb_urllc_copy = channel_rb_urllc;
             channel_rb_embb_copy = channel_rb_embb;
 
-            for (int it = 0 ; it < channel_rb_embb_copy.size() ; it++)
+            for (int it = 0; it < channel_rb_embb_copy.size(); it++)
             {
-                if(it == index)
-                channel_rb_embb_copy[it].second += extra_rb;
+                if (it == index)
+                    channel_rb_embb_copy[it].second += extra_rb;
             }
 
             vector<pair<double, double>> channel_rb_embb_standard = channel_rb_embb_copy;
@@ -325,35 +323,36 @@ int main()
             }
             for (int i = 0; i < no_of_embb_users; i++)
             {
-                if(i == index)
-                effective_rb[minislots][i] += channel_rb_embb_copy[i].second + extra_rb;
+                if (i == index)
+                    effective_rb[minislots][i] += channel_rb_embb_copy[i].second + extra_rb;
                 else
-                effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
-                data_rate_embb_copy[i] = data_rate_embb[i] *(effective_rb[minislots][i]/channel_rb_embb[i].second);
+                    effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
+                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb[minislots][i] / channel_rb_embb[i].second);
                 // if (effective_rb[minislots][i] == 0)
                 // {
                 //     curr_idx.insert(i);
                 // }
             }
-            for (int i = 0; i < no_of_embb_users; i++)
-            {
-                for (int minislot = 1; minislot <= 8; minislot++)
-                {
-                    rolling_rate[timeframe][i] = ((1 - (1.0 / minislot)) * rolling_rate[timeframe][i]) + (1.0 / minislot) * data_rate_embb_copy[i];
-                    int val = *min_element(rolling_rate[timeframe].begin(),rolling_rate[timeframe].end());
-                    auto test = find(rolling_rate[timeframe].begin(),rolling_rate[timeframe].end(), val);
-                    index = test - rolling_rate[timeframe].begin();
-                }
-            }
 
             prev_idx = curr_idx;
             curr_idx.clear();
-                loss_sum += channel_rb_embb_standard[index].second - channel_rb_embb_copy[index].second;
+            loss_sum += channel_rb_embb_standard[index].second - channel_rb_embb_copy[index].second;
             cout << endl;
 
         } // end of minislot
 
-        extra_rb = loss_sum/8;
+        for (int i = 0; i < no_of_embb_users; i++)
+        {
+            for (int minislot = 1; minislot <= 8; minislot++)
+            {
+                rolling_rate[timeframe][i] = ((1 - (1.0 / minislot)) * rolling_rate[timeframe][i]) + (1.0 / minislot) * data_rate_embb_copy[i];
+                int val = *min_element(rolling_rate[timeframe].begin(), rolling_rate[timeframe].end());
+                auto test = find(rolling_rate[timeframe].begin(), rolling_rate[timeframe].end(), val);
+                index = test - rolling_rate[timeframe].begin();
+            }
+        }
+
+        extra_rb = loss_sum / 8;
         cout << "Extra rb is " << extra_rb << endl;
         cout << endl
              << "---------------------" << endl;
@@ -376,8 +375,8 @@ int main()
     {
         for (int timeframe = 0; timeframe < 10; timeframe++)
             average_rate_embb[i] += rolling_rate[timeframe][i];
-            
-            average_rate_embb[i]/=10;
+
+        average_rate_embb[i] /= 10;
     }
     cout << "                ****************************                " << endl;
     cout << "                     ^^^^^^^^^^^^^^^^                       " << endl;
