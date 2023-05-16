@@ -146,7 +146,6 @@ int main()
     unordered_set<int> prev_idx, curr_idx;
     vector<vector<double>> effective_rb(8, vector<double>(no_of_embb_users, 0));
 
-    double loss_sum = 0;
     vector<double> average_rate_embb(no_of_embb_users);
     vector<double> data_rate_embb(no_of_embb_users);
     vector<vector<double>> rolling_rate(10, vector<double>(no_of_embb_users, 0));
@@ -168,7 +167,8 @@ int main()
 
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
-        loss_sum = 0;
+        int loss_sum[no_of_embb_users] = {0};
+   
         prev_idx.clear();
         curr_idx.clear();
 
@@ -322,7 +322,7 @@ int main()
             }
             for (int i = 0; i < no_of_embb_users; i++)
             {
-                effective_rb[minislots][i] += channel_rb_embb_copy[i].second + extra_rb;
+                effective_rb[minislots][i] += channel_rb_embb_copy[i].second + (loss_sum[i]/8);
                 data_rate_embb_copy[i] = data_rate_embb[i] *(effective_rb[minislots][i]/channel_rb_embb[i].second);
                 // if (effective_rb[minislots][i] == 0)
                 // {
@@ -344,21 +344,20 @@ int main()
             for (int i = 0; i < channel_rb_embb.size(); i++)
             {
                 cout << channel_rb_embb_standard[i].second - channel_rb_embb_copy[i].second << " ";
-                loss_sum += channel_rb_embb_standard[i].second - channel_rb_embb_copy[i].second;
+                loss_sum[i] += abs(floor(channel_rb_embb_standard[i].second - channel_rb_embb_copy[i].second));
             }
             cout << endl;
 
         } // end of minislot
 
-        cout << endl
-             << "Loss sum is " << loss_sum / 80 << endl;
-        extra_rb = loss_sum / 80;
+      
+        
         cout << "Extra rb is " << extra_rb << endl;
         cout << endl
              << "---------------------" << endl;
     } // end of time frame
 
-    cout << "Final Loss sum is " << loss_sum / 8 << endl;
+  
 
     // cout<<"Total loss "<<(total_rb_count * 8) - loss_sum<<endl;
 
@@ -390,7 +389,7 @@ int main()
     // }
     for (int i = 0; i < no_of_embb_users; i++)
     {
-        cout << ((data_rate_embb[i] / average_rate_embb[i]) * 100) << " ";
+        cout << 100-((data_rate_embb[i] / average_rate_embb[i]) * 100) << " ";
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
