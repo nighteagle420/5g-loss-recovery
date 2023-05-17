@@ -5,13 +5,7 @@
 #include <algorithm>
 using namespace std;
 
-// struct node {
-//   int mod_index;
-//   double code_rate;
-//   double spec_eff;
-// };
 
-// typedef struct node r;
 
 User embb_table[] = {
     User(2, 193, 0.3770), User(2, 308, 0.6016), User(2, 449, 0.8770),
@@ -24,14 +18,7 @@ User embb_table[] = {
     User(8, 797, 6.2266), User(8, 841, 6.5703), User(8, 885, 6.9141),
     User(8, 916.5, 7.1602), User(8, 948, 7.4063)};
 
-// r embb_table[27] = {
-//     {2, 193, 0.3770},   {2, 308, 0.6016}, {2, 449, 0.8770},   {2,
-//     602, 1.1758}, {4, 378, 1.4766},   {4, 434, 1.6953}, {4, 490, 1.9141}, {4,
-//     553, 2.1602}, {4, 616, 2.4063},   {4, 658, 2.5704}, {6, 466, 2.7305}, {6,
-//     517, 3.0293}, {6, 567, 3.3223},   {6, 616, 3.6094}, {6, 719, 4.2129}, {6,
-//     772, 4.5234}, {6, 822, 4.8164},   {6, 873, 5.1152}, {8, 682.5, 5.3320},
-//     {8, 711, 5.5547}, {8, 754, 5.8906},   {8, 797, 6.2266}, {8, 841, 6.5703},
-//     {8, 885, 6.9141}, {8, 916.5, 7.1602}, {8, 948, 7.4063}};
+
 
 User urllc_table[] = {
     User(2, 40, 0.0781), User(2, 50, 0.0977), User(2, 64, 0.1250),
@@ -45,14 +32,6 @@ User urllc_table[] = {
     User(6, 616, 3.6094), User(6, 666, 3.9023), User(6, 719, 4.2129),
     User(6, 772, 4.5234)};
 
-// r urllc_table[28] = {
-//     {2, 40, 0.0781},  {2, 50, 0.0977},  {2, 64, 0.1250},  {2, 78, 0.1523},
-//     {2, 99, 0.1934},  {2, 120, 0.2344}, {2, 157, 0.3066}, {2, 193, 0.3770},
-//     {2, 251, 0.4902}, {2, 308, 0.6016}, {2, 379, 0.7402}, {2, 449, 0.8770},
-//     {2, 526, 1.0273}, {2, 602, 1.1758}, {4, 340, 1.3281}, {4, 378, 1.4766},
-//     {4, 434, 1.6953}, {4, 490, 1.9141}, {4, 553, 2.1602}, {4, 616, 2.4063},
-//     {6, 438, 2.5664}, {6, 466, 2.7305}, {6, 517, 3.0293}, {6, 567, 3.3223},
-//     {6, 616, 3.6094}, {6, 666, 3.9023}, {6, 719, 4.2129}, {6, 772, 4.5234}};
 
 int main()
 {
@@ -120,23 +99,6 @@ int main()
 
     sort(channel_rb_embb.rbegin(), channel_rb_embb.rend());
 
-    //------------------------------------------------------------------------------------------------------
-    // map<double, int> embb_map;
-    // //   double channel_quality_embb;
-    // map<double, int> urllc_map;
-    // //   double channel_quality_urllc;
-
-    // for (int count = 0; count < no_of_embb_users; count++)
-    // {
-    //     double channelQuality =
-    //         Utility::getChannelQuality(SNR_embb[count], power_embb[count]);
-    //     embb_map[channelQuality] = rb_req_embb[count];
-    // }
-
-    // unordered_map<int, int> curr, prev;
-
-    // sort the urllc users according to channel quality(highest first)
-    // can store them in map/priority_queue
 
     vector<pair<double, double>> channel_rb_embb_copy = channel_rb_embb;
 
@@ -164,7 +126,7 @@ int main()
     ////////////////////////////
     /////////////////////////////
     int extra_rb = 0;
-
+//--------------------------------------------------------TIME FRAME START--------------------------------------------------
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
         loss_sum = 0;
@@ -237,10 +199,14 @@ int main()
         vector<pair<double, double>> channel_rb_urllc_copy;
         int index = 0;
 
-        //-----------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------MINISLOT START----------------------------------------
 
         for (int minislots = 0; minislots < 8; minislots++)
         {
+            for (int i = 0; i < no_of_embb_users; i++)
+            {
+                effective_rb[minislots][i] = 0;
+            }
             channel_rb_urllc_copy = channel_rb_urllc;
             channel_rb_embb_copy = channel_rb_embb;
 
@@ -260,27 +226,32 @@ int main()
 
             for (int count_urllc = 0, count_embb = 0, backptr = no_of_embb_users - 1; count_urllc < no_of_urllc_users && count_embb < no_of_embb_users && backptr >= count_embb;)
             {
-                auto &h_urllc = channel_rb_urllc_copy[count_urllc].first;
-                auto &h_embb = channel_rb_embb_copy[count_embb].first;
-                auto &rb_urllc = channel_rb_urllc_copy[count_urllc].second;
-                auto &rb_embb = channel_rb_embb_copy[count_embb].second;
-                // rb_embb+=extra_rb;
+                double h_urllc = channel_rb_urllc_copy[count_urllc].first;
+                double h_embb = channel_rb_embb_copy[count_embb].first;
+                double &rb_urllc = channel_rb_urllc_copy[count_urllc].second;
+                double &rb_embb = channel_rb_embb_copy[count_embb].second;
 
                 if (h_urllc < h_embb)
                 {
                     // sic
                     if (rb_embb >= rb_urllc)
                     {
-                        effective_rb[minislots][count_embb] += rb_urllc * (1 - percent);
+
+                        effective_rb[minislots][count_embb] += (double)rb_urllc * (1 - percent);
                         rb_embb -= rb_urllc;
                         rb_urllc = 0;
                         count_urllc++;
+                        if (rb_embb == 0)
+                        {
+                            count_embb++;
+                        }
 
                         continue;
                     }
                     else
                     {
-                        effective_rb[minislots][count_embb] += rb_embb * (1 - percent);
+
+                        effective_rb[minislots][count_embb] += (double)rb_embb * (1 - percent);
                         rb_urllc -= rb_embb;
                         rb_embb = 0;
 
@@ -290,27 +261,29 @@ int main()
                 }
                 else
                 {
-                    while (backptr >= count_embb)
+                    while (backptr >= count_embb && h_urllc >= h_embb)
                     {
                         auto &backptr_rb_embb = channel_rb_embb_copy[backptr].second;
+                        rb_urllc = channel_rb_urllc_copy[count_urllc].second;
                         if (prev_idx.find(backptr) == prev_idx.end())
                         {
                             if (backptr_rb_embb > rb_urllc)
                             {
-                                // cout<<"else part 1"<<endl;
                                 backptr_rb_embb -= rb_urllc;
                                 rb_urllc = 0;
                                 count_urllc++;
-                                //
                             }
                             else
                             {
-                                // cout<<"else part2"<<endl;;
                                 rb_urllc -= backptr_rb_embb;
                                 backptr_rb_embb = 0;
                                 // discrimination
                                 // store index of this
                                 curr_idx.insert(backptr);
+                                if (rb_urllc == 0)
+                                {
+                                    count_urllc++;
+                                }
                                 backptr--;
                             }
                         }
@@ -318,20 +291,18 @@ int main()
                         {
                             backptr--;
                         }
+                        h_urllc = channel_rb_urllc_copy[count_urllc].first;
+                        h_embb = channel_rb_embb_copy[backptr].first;
+                        
                     }
                 }
-            }
+            } // end of scheduling
             for (int i = 0; i < no_of_embb_users; i++)
             {
-                if (i == index)
-                    effective_rb[minislots][i] += channel_rb_embb_copy[i].second + extra_rb;
-                else
-                    effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
-                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb[minislots][i] / channel_rb_embb[i].second);
-                // if (effective_rb[minislots][i] == 0)
-                // {
-                //     curr_idx.insert(i);
-                // }
+                
+                effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
+                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb[minislots][i] / channel_rb_embb_standard[i].second);
+                
             }
 
             prev_idx = curr_idx;
@@ -360,7 +331,6 @@ int main()
 
     cout << "Final Loss sum is " << loss_sum / 8 << endl;
 
-    // cout<<"Total loss "<<(total_rb_count * 8) - loss_sum<<endl;
 
     // printing rate 2d vector
     for (int i = 0; i < effective_rb.size(); i++)
@@ -384,96 +354,11 @@ int main()
     cout << "                     ^^^^^^^^^^^^^^^^                       " << endl;
     cout << "                ****************************                " << endl;
 
-    // for (int i = 0; i < no_of_embb_users; i++)
-    // {
-    //     cout << average_rate_embb[i] << " ";
-    // }
+    
     for (int i = 0; i < no_of_embb_users; i++)
     {
-        cout << ((data_rate_embb[i] / average_rate_embb[i]) * 100) << " ";
+        cout << ((average_rate_embb[i]/data_rate_embb[i]) * 100) << " ";
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // for 8 mini-slots
-    /*for (int time = 0; time < 8; time++)
-    {
-      for (int count_embb = no_of_embb_users - 1, count_urllc = no_of_urllc_users - 1; count_urllc >= 0;)
-      {
-        auto h_urllc = channel_rb_urllc_copy[count_urllc].first;
-        auto h_embb = channel_rb_embb_copy[count_embb].first;
-        auto rb_urllc = channel_rb_urllc_copy[count_urllc].second;
-        auto rb_embb = channel_rb_embb_copy[count_embb].second;
-        if (h_urllc < h_embb)
-        {
-          // sic
-          if (rb_embb != 0)
-          {
-            if (rb_embb >= rb_urllc)
-            {
-              count_urllc--;
-              rb_embb -= rb_urllc;
-              effective_rb[count_embb] += rb_urllc * (1 - percent);//////////////////////////////////////////////////////////////////////////////////////
-              rb_urllc = 0;
-            }
-            else
-            {
-              rb_urllc -= rb_embb;
-              rb_embb = 0;
-              count_embb--;
-            }
-          }
-          else
-          {
-            count_embb--;
-            continue;
-          }
-          // embb_rate_copy[it->first] = percent * embb_rate_copy[it->first];
-        }
-        else
-        {
-          // puncturing
-          for (auto i : channel_rb_embb_copy)
-          {
-            if (prev.find(i.first) == prev.end())
-            {
-              // puncturing
-              if (rb_urllc >= i.second)
-              {
-                rb_urllc -= i.second;
-                curr[i.first]++;
-                continue;
-              }
-              else
-              {
-                i.second -= rb_urllc;
-              }
-            }
-          }
-          prev = curr; // embb_users stored whose rb allocated = 0, for priority in next round
-          curr.clear();
-        }
-        // when i encounter i, I skip for puncturing.
-      }
-      if (time == 0)
-      {
-      }
-      else
-      {
-        // for (int count = 0; count < no_of_embb_users; count++)
-        // {
-        //     rolling_average[count] = (prev_rb[count] * effective_rb[count] + channel_rb_embb_copy[count_embb].second * effective_rb) / rb_req_embb[count];
-        // }
-        // calculating total loss
-        int loss_sum = 0;
-        for (int count = 0; count < no_of_embb_users; count++)
-        {
-          loss_sum += (channel_rb_embb[count].second - channel_rb_embb_copy[count].second);
-        }
-        cout << loss_sum << endl;
-      }
-    }
-    */
-    // rolling weighted average=(n(p) * rate(prev)+n(curr) * rate(current))/n(reqd)
+       
     return 0;
 }

@@ -104,8 +104,7 @@ int main()
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     unordered_set<int> prev_idx, curr_idx;
-    vector<vector<double>> effective_rb_embb(8, vector<double>(no_of_embb_users, 0));
-
+   
     
     vector<double> average_rate_embb(no_of_embb_users);
     vector<double> data_rate_embb(no_of_embb_users);
@@ -292,10 +291,10 @@ int main()
             for (int i = 0; i < no_of_embb_users; i++)
             {
 
-                effective_rb_embb[minislots][i] += channel_rb_embb_copy[i].second;
-                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb_embb[minislots][i] / channel_rb_embb_standard[i].second);
+                effective_rb[minislots][i] += channel_rb_embb_copy[i].second;
+                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb[minislots][i] / channel_rb_embb_standard[i].second);
                 cout<<"W + ratio"<<endl;
-                cout<<effective_rb_embb[minislots][i]<<" "<<channel_rb_embb_standard[i].second<<" "<< channel_rb_embb_copy[i].second<<endl;
+                cout<<effective_rb[minislots][i]<<" "<<channel_rb_embb_standard[i].second<<" "<< channel_rb_embb_copy[i].second<<endl;
                 
             }
 
@@ -317,9 +316,7 @@ int main()
         }
 
         extra_rb = 1;
-        cout << "Extra rb is " << extra_rb << endl;
-        cout << endl
-             << "---------------------" << endl;
+     
     } // end of time frame
 
     

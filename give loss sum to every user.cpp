@@ -117,7 +117,7 @@ int main()
     /////////////////////////////
 
     double prev_loss_sum[no_of_embb_users] = {0};
-    //-----------------------------------------------------------TIME FRAME START-------------------------------------------------
+    //-----------------------------------------------------------TIMEFRAME START-------------------------------------------------
     for (int timeframe = 0; timeframe < 10; timeframe++)
     {
         double curr_loss_sum[no_of_embb_users] = {0};
@@ -253,14 +253,12 @@ int main()
                         {
                             if (backptr_rb_embb > rb_urllc)
                             {
-
                                 backptr_rb_embb -= rb_urllc;
                                 rb_urllc = 0;
                                 count_urllc++;
                             }
                             else
                             {
-
                                 rb_urllc -= backptr_rb_embb;
                                 backptr_rb_embb = 0;
                                 // discrimination
