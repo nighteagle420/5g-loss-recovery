@@ -321,7 +321,7 @@ int main()
             {
 
                 effective_rb_embb[minislots][i] += channel_rb_embb_copy[i].second + (channel_rb_embb_standard[i].second-channel_rb_embb_copy[i].second)/total_loss_sum;
-                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb_embb[minislots][i] / channel_rb_embb[i].second);
+                data_rate_embb_copy[i] = data_rate_embb[i] * (effective_rb_embb[minislots][i] / channel_rb_embb_standard[i].second);
                 // if (effective_rb_embb[minislots][i] == 0)
                 // {
                 //     curr_idx.insert(i);
@@ -380,7 +380,7 @@ int main()
     // }
     for (int i = 0; i < no_of_embb_users; i++)
     {
-        cout << ((data_rate_embb[i] / average_rate_embb[i]) * 100) << " ";
+        cout << ((average_rate_embb[i]/data_rate_embb[i]) * 100) << " ";
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
