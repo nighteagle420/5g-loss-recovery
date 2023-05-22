@@ -245,7 +245,7 @@ int main()
                 }
                 else
                 {
-                    while (backptr >= count_embb && h_urllc >= h_embb)
+                    while (backptr >= count_embb && h_urllc >= h_embb && h_urllc>=channel_rb_embb_copy[count_embb].first)
                     {
                         auto &backptr_rb_embb = channel_rb_embb_copy[backptr].second;
                         rb_urllc = channel_rb_urllc_copy[count_urllc].second;
